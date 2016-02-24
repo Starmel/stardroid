@@ -14,15 +14,15 @@
 
 package com.google.android.stardroid.renderer.util;
 
+import com.google.android.stardroid.units.Vector3;
+import com.google.android.stardroid.util.FixedPoint;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
-
-import com.google.android.stardroid.units.Vector3;
-import com.google.android.stardroid.util.FixedPoint;
 
 public class VertexBuffer {
 
@@ -68,6 +68,12 @@ public class VertexBuffer {
     mPositionBuffer.put(FixedPoint.floatToFixedPoint(x));
     mPositionBuffer.put(FixedPoint.floatToFixedPoint(y));
     mPositionBuffer.put(FixedPoint.floatToFixedPoint(z));
+  }
+
+  public void addPoint(double x, double y, double z) {
+    mPositionBuffer.put(FixedPoint.doubleToFixedPoint(x));
+    mPositionBuffer.put(FixedPoint.doubleToFixedPoint(y));
+    mPositionBuffer.put(FixedPoint.doubleToFixedPoint(z));
   }
 
   public void set(GL10 gl) {

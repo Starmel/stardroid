@@ -31,9 +31,9 @@ public interface ImageSource extends PositionSource {
 
   // TODO(brent): talk to James to determine what's really needed here.
   
-  public float[] getVerticalCorner();
+  public double[] getVerticalCorner();
   
-  public float[] getHorizontalCorner();
+  public double[] getHorizontalCorner();
   
   public boolean requiresBlending();
 }

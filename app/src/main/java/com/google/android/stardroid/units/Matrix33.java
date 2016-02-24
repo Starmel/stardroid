@@ -22,15 +22,15 @@ package com.google.android.stardroid.units;
  */
 public class Matrix33 implements Cloneable {
 
-  public float xx;
-  public float xy;
-  public float xz;
-  public float yx;
-  public float yy;
-  public float yz;
-  public float zx;
-  public float zy;
-  public float zz;
+  public double xx;
+  public double xy;
+  public double xz;
+  public double yx;
+  public double yy;
+  public double yz;
+  public double zx;
+  public double zy;
+  public double zz;
 
   /**
    * Construct a new matrix.
@@ -44,9 +44,9 @@ public class Matrix33 implements Cloneable {
    * @param zy row 3, col 2
    * @param zz row 3, col 3
    */
-  public Matrix33(float xx, float xy, float xz,
-                  float yx, float yy, float yz,
-                  float zx, float zy, float zz) {
+  public Matrix33(double xx, double xy, double xz,
+                  double yx, double yy, double yz,
+                  double zx, double zy, double zz) {
     this.xx = xx;
     this.xy = xy;
     this.xz = xz;
@@ -113,12 +113,12 @@ public class Matrix33 implements Cloneable {
     new Matrix33(0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 
-  public float getDeterminant() {
+  public double getDeterminant() {
     return xx*yy*zz + xy*yz*zx + xz*yx*zy - xx*yz*zy - yy*zx*xz - zz*xy*yx;
   }
 
   public Matrix33 getInverse() {
-    float det = getDeterminant();
+    double det = getDeterminant();
     if (det == 0.0) return null;
     return new Matrix33(
         (yy*zz - yz*zy) / det, (xz*zy - xy*zz) / det, (xy*yz - xz*yy) / det,
@@ -130,7 +130,7 @@ public class Matrix33 implements Cloneable {
    * Transpose the matrix, in place.
    */
   public void transpose() {
-    float tmp;
+    double tmp;
     tmp = xy;
     xy = yx;
     yx = tmp;

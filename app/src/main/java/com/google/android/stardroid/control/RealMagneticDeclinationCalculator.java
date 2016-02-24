@@ -44,10 +44,8 @@ public class RealMagneticDeclinationCalculator implements MagneticDeclinationCal
    */
   @Override
   public void setLocationAndTime(LatLong location, long timeInMillis) {
-    geomagneticField = new GeomagneticField(location.getLatitude(),
-            location.getLongitude(),
-                                            0,
-                                            timeInMillis);
+    geomagneticField = new GeomagneticField((float) location.getLatitude(),
+            location.getLongitude(), 0, timeInMillis);
   }
 
   @Override

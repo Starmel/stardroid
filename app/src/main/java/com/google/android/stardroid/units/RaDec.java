@@ -21,10 +21,10 @@ import com.google.android.stardroid.util.Geometry;
 import com.google.android.stardroid.util.MathUtil;
 
 public class RaDec {
-  public float ra;        // In degrees
-  public float dec;       // In degrees
+  public double ra;        // In degrees
+  public double dec;       // In degrees
 
-  public RaDec(float ra, float dec) {
+  public RaDec(double ra, double dec) {
     this.ra = ra;
     this.dec = dec;
   }
@@ -38,9 +38,9 @@ public class RaDec {
 
   public static RaDec calculateRaDecDist(HeliocentricCoordinates coords) {
     // find the RA and DEC from the rectangular equatorial coords
-    float ra = Geometry.mod2pi(MathUtil.atan2(coords.y, coords.x)) * Geometry.RADIANS_TO_DEGREES;
-    float dec = MathUtil.atan(coords.z / MathUtil.sqrt(coords.x * coords.x + coords.y * coords.y))
-        * Geometry.RADIANS_TO_DEGREES;
+    double ra = Geometry.mod2pi(Math.atan2(coords.y, coords.x)) * MathUtil.RADIANS_TO_DEGREES;
+    double dec = Math.atan(coords.z / Math.sqrt(coords.x * coords.x + coords.y * coords.y))
+        * MathUtil.RADIANS_TO_DEGREES;
 
     return new RaDec(ra, dec);
   }
@@ -56,8 +56,8 @@ public class RaDec {
     if (planet.equals(Planet.Sun)) {
       // Invert the view, since we want the Sun in earth coordinates, not the Earth in sun
       // coordinates.
-      coords = new HeliocentricCoordinates(earthCoordinates.radius, earthCoordinates.x * -1.0f,
-                                           earthCoordinates.y * -1.0f, earthCoordinates.z * -1.0f);
+      coords = new HeliocentricCoordinates(earthCoordinates.radius, earthCoordinates.x * -1.0,
+                                           earthCoordinates.y * -1.0, earthCoordinates.z * -1.0);
     } else {
       coords = HeliocentricCoordinates.getInstance(planet, time);
       coords.Subtract(earthCoordinates);
@@ -67,13 +67,13 @@ public class RaDec {
   }
 
   public static RaDec getInstance(GeocentricCoordinates coords) {
-    float raRad = MathUtil.atan2(coords.y, coords.x);
+    double raRad = Math.atan2(coords.y, coords.x);
     if (raRad < 0) raRad += MathUtil.TWO_PI;
-    float decRad = MathUtil.atan2(coords.z,
-                                  MathUtil.sqrt(coords.x * coords.x + coords.y * coords.y));
+    double decRad = Math.atan2(coords.z,
+        Math.sqrt(coords.x * coords.x + coords.y * coords.y));
 
-    return new RaDec(raRad * Geometry.RADIANS_TO_DEGREES,
-                             decRad * Geometry.RADIANS_TO_DEGREES);
+    return new RaDec(raRad * MathUtil.RADIANS_TO_DEGREES,
+                             decRad * MathUtil.RADIANS_TO_DEGREES);
   }
 
 

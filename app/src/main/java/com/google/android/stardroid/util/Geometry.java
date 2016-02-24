@@ -32,24 +32,19 @@ import com.google.android.stardroid.units.Vector3;
  */
 
 public class Geometry {
-  // Convert Degrees to Radians
-  public static final float DEGREES_TO_RADIANS = MathUtil.PI / 180.0f;
-
-  // Convert Radians to Degrees
-  public static final float RADIANS_TO_DEGREES = 180.0f / MathUtil.PI;
 
   private Geometry() {
   }
-
+// TODO(jontayler): move this.
   /**
    * Return the integer part of a number
    */
-  public static float abs_floor(float x) {
-    float result;
+  public static double absFloor(double x) {
+    double result;
     if (x >= 0.0)
-      result = MathUtil.floor(x);
+      result = Math.floor(x);
     else
-      result = MathUtil.ceil(x);
+      result = Math.ceil(x);
     return result;
   }
 
@@ -57,16 +52,16 @@ public class Geometry {
    * Returns the modulo the given value by 2\pi. Returns an angle in the range 0
    * to 2\pi radians.
    */
-  public static float mod2pi(float x) {
-    float factor = x / MathUtil.TWO_PI;
-    float result = MathUtil.TWO_PI * (factor - abs_floor(factor));
+  public static double mod2pi(double x) {
+    double factor = x / MathUtil.TWO_PI;
+    double result = MathUtil.TWO_PI * (factor - absFloor(factor));
     if (result < 0.0) {
       result = MathUtil.TWO_PI + result;
     }
     return result;
   }
 
-  public static float scalarProduct(Vector3 v1, Vector3 v2) {
+  public static double scalarProduct(Vector3 v1, Vector3 v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
   }
 
@@ -79,7 +74,7 @@ public class Geometry {
   /**
    * Scales the vector by the given amount
    */
-  public static Vector3 scaleVector(Vector3 v, float scale) {
+  public static Vector3 scaleVector(Vector3 v, double scale) {
     return new Vector3 (scale * v.x, scale * v.y, scale * v.z);
   }
 
@@ -93,10 +88,10 @@ public class Geometry {
     return new Vector3(first.x + second.x, first.y + second.y, first.z + second.z);
   }
 
-  public static float cosineSimilarity(Vector3 v1, Vector3 v2) {
+  public static double cosineSimilarity(Vector3 v1, Vector3 v2) {
     // We might want to optimize this implementation at some point.
     return scalarProduct(v1, v2)
-        / MathUtil.sqrt(scalarProduct(v1, v1)
+        / Math.sqrt(scalarProduct(v1, v1)
             * scalarProduct(v2, v2));
   }
 
@@ -104,12 +99,12 @@ public class Geometry {
    * Convert ra and dec to x,y,z where the point is place on the unit sphere.
    */
   public static GeocentricCoordinates getXYZ(RaDec raDec) {
-    float raRadians = raDec.ra * DEGREES_TO_RADIANS;
-    float decRadians = raDec.dec * DEGREES_TO_RADIANS;
+    double raRadians = raDec.ra * MathUtil.DEGREES_TO_RADIANS;
+    double decRadians = raDec.dec * MathUtil.DEGREES_TO_RADIANS;
     GeocentricCoordinates result = new GeocentricCoordinates(
-        MathUtil.cos(raRadians) * MathUtil.cos(decRadians),
-        MathUtil.sin(raRadians) * MathUtil.cos(decRadians),
-        MathUtil.sin(decRadians));
+        Math.cos(raRadians) * Math.cos(decRadians),
+        Math.sin(raRadians) * Math.cos(decRadians),
+        Math.sin(decRadians));
     return result;
   }
 
@@ -118,8 +113,8 @@ public class Geometry {
    */
   public static RaDec calculateRADecOfZenith(Date utc, LatLong location) {
     // compute overhead RA in degrees
-    float my_ra = TimeUtil.meanSiderealTime(utc, location.getLongitude());
-    float my_dec = location.getLatitude();
+    double my_ra = TimeUtil.meanSiderealTime(utc, location.getLongitude());
+    double my_dec = location.getLatitude();
     return new RaDec(my_ra, my_dec);
   }
 
@@ -153,27 +148,27 @@ public class Geometry {
    * @param degrees
    * @param axis - must be a unit vector.
    */
-  public static Matrix33 calculateRotationMatrix(float degrees, Vector3 axis) {
+  public static Matrix33 calculateRotationMatrix(double degrees, Vector3 axis) {
     // Construct the rotation matrix about this vector
-    float cosD = MathUtil.cos(degrees * Geometry.DEGREES_TO_RADIANS);
-    float sinD = MathUtil.sin(degrees * Geometry.DEGREES_TO_RADIANS);
-    float oneMinusCosD = 1f - cosD;
+    double cosD = Math.cos(degrees * MathUtil.DEGREES_TO_RADIANS);
+    double sinD = Math.sin(degrees * MathUtil.DEGREES_TO_RADIANS);
+    double oneMinusCosD = 1.0 - cosD;
 
-    float x = axis.x;
-    float y = axis.y;
-    float z = axis.z;
+    double x = axis.x;
+    double y = axis.y;
+    double z = axis.z;
 
-    float xs = x * sinD;
-    float ys = y * sinD;
-    float zs = z * sinD;
+    double xs = x * sinD;
+    double ys = y * sinD;
+    double zs = z * sinD;
 
-    float xm = x * oneMinusCosD;
-    float ym = y * oneMinusCosD;
-    float zm = z * oneMinusCosD;
+    double xm = x * oneMinusCosD;
+    double ym = y * oneMinusCosD;
+    double zm = z * oneMinusCosD;
 
-    float xym = x * ym;
-    float yzm = y * zm;
-    float zxm = z * xm;
+    double xym = x * ym;
+    double yzm = y * zm;
+    double zxm = z * xm;
 
     Matrix33 rotationMatrix = new Matrix33(x * xm + cosD, xym + zs, zxm - ys,
                                            xym - zs, y * ym+cosD, yzm + xs,

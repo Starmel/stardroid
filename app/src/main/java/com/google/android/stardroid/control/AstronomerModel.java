@@ -68,22 +68,22 @@ public interface AstronomerModel {
       return perpendicular.copy();
     }
 
-    public float getLineOfSightX() {
+    public double getLineOfSightX() {
       return lineOfSight.x;
     }
-    public float getLineOfSightY() {
+    public double getLineOfSightY() {
       return lineOfSight.y;
     }
-    public float getLineOfSightZ() {
+    public double getLineOfSightZ() {
       return lineOfSight.z;
     }
-    public float getPerpendicularX() {
+    public double getPerpendicularX() {
       return perpendicular.x;
     }
-    public float getPerpendicularY() {
+    public double getPerpendicularY() {
       return perpendicular.y;
     }
-    public float getPerpendicularZ() {
+    public double getPerpendicularZ() {
       return perpendicular.z;
     }
 
@@ -111,9 +111,9 @@ public interface AstronomerModel {
   /**
    * Gets the field of view in degrees.
    */
-  float getFieldOfView();
+  double getFieldOfView();
 
-  void setFieldOfView(float degrees);
+  void setFieldOfView(double degrees);
 
   /**
    * Returns the time, as UTC.

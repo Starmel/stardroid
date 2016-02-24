@@ -27,20 +27,27 @@ public class Matrix4x4 {
     }
   }
 
+  public Matrix4x4(double[] contents) {
+    assert(contents.length == 16);
+    for (int i = 0; i < 16; ++i) {
+      mValues[i] = (float) contents[i];
+    }
+  }
+
   public static Matrix4x4 createIdentity() {
     return createScaling(1, 1, 1);
   }
 
-  public static Matrix4x4 createScaling(float x, float y, float z) {
-    return new Matrix4x4(new float[] {
+  public static Matrix4x4 createScaling(double x, double y, double z) {
+    return new Matrix4x4(new double[] {
         x, 0, 0, 0,
         0, y, 0, 0,
         0, 0, z, 0,
         0, 0, 0, 1});
   }
 
-  public static Matrix4x4 createTranslation(float x, float y, float z) {
-    return new Matrix4x4(new float[] {
+  public static Matrix4x4 createTranslation(double x, double y, double z) {
+    return new Matrix4x4(new double[] {
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, 0,
@@ -48,41 +55,41 @@ public class Matrix4x4 {
   }
 
   // axis MUST be normalized.
-  public static Matrix4x4 createRotation(float angle, Vector3 axis) {
-    float[] m = new float[16];
+  public static Matrix4x4 createRotation(double angle, Vector3 axis) {
+    double[] m = new double[16];
 
-    float xSqr = axis.x * axis.x;
-    float ySqr = axis.y * axis.y;
-    float zSqr = axis.z * axis.z;
+    double xSqr = axis.x * axis.x;
+    double ySqr = axis.y * axis.y;
+    double zSqr = axis.z * axis.z;
 
-    float sinAngle = MathUtil.sin(angle);
+    double sinAngle = Math.sin(angle);
 
-    float cosAngle = MathUtil.cos(angle);
-    float oneMinusCosAngle = 1 - cosAngle;
+    double cosAngle = Math.cos(angle);
+    double oneMinusCosAngle = 1 - cosAngle;
 
-    float xSinAngle = axis.x * sinAngle;
-    float ySinAngle = axis.y * sinAngle;
-    float zSinAngle = axis.z * sinAngle;
+    double xSinAngle = axis.x * sinAngle;
+    double ySinAngle = axis.y * sinAngle;
+    double zSinAngle = axis.z * sinAngle;
 
-    float zOneMinusCosAngle = axis.z * oneMinusCosAngle;
+    double zOneMinusCosAngle = axis.z * oneMinusCosAngle;
 
-    float xyOneMinusCosAngle = axis.x * axis.y * oneMinusCosAngle;
-    float xzOneMinusCosAngle = axis.x * zOneMinusCosAngle;
-    float yzOneMinusCosAngle = axis.y * zOneMinusCosAngle;
+    double xyOneMinusCosAngle = axis.x * axis.y * oneMinusCosAngle;
+    double xzOneMinusCosAngle = axis.x * zOneMinusCosAngle;
+    double yzOneMinusCosAngle = axis.y * zOneMinusCosAngle;
 
-    m[0] = xSqr + (ySqr + zSqr) * cosAngle;
-    m[1] = xyOneMinusCosAngle + zSinAngle;
-    m[2] = xzOneMinusCosAngle - ySinAngle;
+    m[0] = (float) (xSqr + (ySqr + zSqr) * cosAngle);
+    m[1] = (float) (xyOneMinusCosAngle + zSinAngle);
+    m[2] = (float) (xzOneMinusCosAngle - ySinAngle);
     m[3] = 0;
 
-    m[4] = xyOneMinusCosAngle - zSinAngle;
-    m[5] = ySqr + (xSqr + zSqr) * cosAngle;
-    m[6] = yzOneMinusCosAngle + xSinAngle;
+    m[4] = (float) (xyOneMinusCosAngle - zSinAngle);
+    m[5] = (float) (ySqr + (xSqr + zSqr) * cosAngle);
+    m[6] = (float) (yzOneMinusCosAngle + xSinAngle);
     m[7] = 0;
 
-    m[8] = xzOneMinusCosAngle + ySinAngle;
-    m[9] = yzOneMinusCosAngle - xSinAngle;
-    m[10] = zSqr + (xSqr + ySqr) * cosAngle;
+    m[8] = (float) (xzOneMinusCosAngle + ySinAngle);
+    m[9] = (float) (yzOneMinusCosAngle - xSinAngle);
+    m[10] = (float) (zSqr + (xSqr + ySqr) * cosAngle);
     m[11] = 0;
 
     m[12] = 0;
@@ -93,15 +100,15 @@ public class Matrix4x4 {
     return new Matrix4x4(m);
   }
 
-  public static Matrix4x4 createPerspectiveProjection(float width, float height, float fovyInRadians) {
-    float near = 0.01f;
-    float far = 10000.0f;
+  public static Matrix4x4 createPerspectiveProjection(double width, double height, double fovyInRadians) {
+    double near = 0.01;
+    double far = 10000.0;
 
-    float inverseAspectRatio = height / width;
+    double inverseAspectRatio = (height / width);
 
-    float oneOverTanHalfRadiusOfView = 1.0f / MathUtil.tan(fovyInRadians);
+    double oneOverTanHalfRadiusOfView = (1.0 / Math.tan(fovyInRadians));
 
-    return new Matrix4x4(new float[]{
+    return new Matrix4x4(new double[]{
         inverseAspectRatio * oneOverTanHalfRadiusOfView,
         0,
         0,
@@ -124,7 +131,7 @@ public class Matrix4x4 {
   }
 
   public static Matrix4x4 createView(Vector3 lookDir, Vector3 up, Vector3 right) {
-    return new Matrix4x4(new float[] {
+    return new Matrix4x4(new double[] {
         right.x,
         up.x,
         -lookDir.x,
@@ -150,7 +157,7 @@ public class Matrix4x4 {
     float[] m = mat1.mValues;
     float[] n = mat2.mValues;
 
-    return new Matrix4x4(new float[] {
+    return new Matrix4x4(new double[] {
         m[0]*n[0] + m[4]*n[1] + m[8]*n[2] + m[12]*n[3],
         m[1]*n[0] + m[5]*n[1] + m[9]*n[2] + m[13]*n[3],
         m[2]*n[0] + m[6]*n[1] + m[10]*n[2] + m[14]*n[3],
@@ -188,8 +195,8 @@ public class Matrix4x4 {
   public static Vector3 transformVector(Matrix4x4 mat, Vector3 v) {
     Vector3 trans = multiplyMV(mat, v);
     float[] m = mat.mValues;
-    float w = m[3]*v.x + m[7]*v.y + m[11]*v.z + m[15];
-    float oneOverW = 1.0f / w;
+    double w = m[3]*v.x + m[7]*v.y + m[11]*v.z + m[15];
+    double oneOverW = 1.0f / w;
     trans.x *= oneOverW;
     trans.y *= oneOverW;
     // Don't transform z, we just leave it as a "pseudo-depth".

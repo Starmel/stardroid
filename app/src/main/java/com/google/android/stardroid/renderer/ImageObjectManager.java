@@ -90,19 +90,19 @@ public class ImageObjectManager extends RendererObjectManager {
       for (int i = 0; i < imageSources.size(); i++) {
         ImageSource is = imageSources.get(i);
         GeocentricCoordinates xyz = is.getLocation();
-        float px = xyz.x;
-        float py = xyz.y;
-        float pz = xyz.z;
+        double px = xyz.x;
+        double py = xyz.y;
+        double pz = xyz.z;
 
-        float[] u = is.getHorizontalCorner();
-        float ux = u[0];
-        float uy = u[1];
-        float uz = u[2];
+        double[] u = is.getHorizontalCorner();
+        double ux = u[0];
+        double uy = u[1];
+        double uz = u[2];
 
-        float[] v = is.getVerticalCorner();
-        float vx = v[0];
-        float vy = v[1];
-        float vz = v[2];
+        double[] v = is.getVerticalCorner();
+        double vx = v[0];
+        double vy = v[1];
+        double vz = v[2];
 
         // lower left
         vertexBuffer.addPoint(px - ux - vx, py - uy - vy, pz - uz - vz);

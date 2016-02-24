@@ -14,15 +14,13 @@
 
 package com.google.android.stardroid.units;
 
-import com.google.android.stardroid.util.MathUtil;
-
 public class Vector3 {
 
-  public float x;
-  public float y;
-  public float z;
+  public double x;
+  public double y;
+  public double z;
 
-  public Vector3(float x, float y, float z) {
+  public Vector3(double x, double y, double z) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -34,7 +32,7 @@ public class Vector3 {
    * you should already be questioning your use of float[] instead of Vector3.
    * @param xyz
    */
-  public Vector3(float[] xyz) throws IllegalArgumentException {
+  public Vector3(double[] xyz) throws IllegalArgumentException {
     if (xyz.length != 3) {
       throw new IllegalArgumentException("Trying to create 3 vector from array of length: " + xyz.length);
     }
@@ -50,7 +48,7 @@ public class Vector3 {
   /**
    * Assigns these values to the vector's components.
    */
-  public void assign(float x, float y, float z) {
+  public void assign(double x, double y, double z) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -65,15 +63,15 @@ public class Vector3 {
     this.z = other.z;
   }
 
-  public float length() {
-    return MathUtil.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+  public double length() {
+    return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
   }
 
   /**
    * Normalize the vector in place, i.e., map it to the corresponding unit vector.
    */
   public void normalize() {
-    float norm = this.length();
+    double norm = this.length();
     this.x = this.x / norm;
     this.y = this.y / norm;
     this.z = this.z / norm;
@@ -82,14 +80,14 @@ public class Vector3 {
   /**
    * Scale the vector in place.
    */
-  public void scale(float scale) {
+  public void scale(double scale) {
     this.x = this.x * scale;
     this.y = this.y * scale;
     this.z = this.z * scale;
   }
 
-  public float[] toFloatArray() {
-    return new float[] {x, y, z};
+  public double[] toDoubleArray() {
+    return new double[] {x, y, z};
   }
 
   @Override
@@ -103,11 +101,12 @@ public class Vector3 {
   @Override
   public int hashCode() {
     // This is dumb, but it will do for now.
-    return Float.floatToIntBits(x) + Float.floatToIntBits(y) + Float.floatToIntBits(z);
+    return (int) (Double.doubleToLongBits(x)
+        + Double.doubleToLongBits(y) + Double.doubleToLongBits(z));
   }
 
   @Override
   public String toString() {
-    return String.format("x=%f, y=%f, z=%f", x, y, z);
+    return String.format("x=%d, y=%d, z=%d", x, y, z);
   }
 }

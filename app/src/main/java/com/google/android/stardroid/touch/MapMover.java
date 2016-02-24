@@ -69,7 +69,7 @@ public class MapMover implements
   }
 
   @Override
-  public boolean onRotate(float degrees) {
+  public boolean onRotate(double degrees) {
     if (allowRotation) {
       controllerGroup.rotate(-degrees);
       return true;
@@ -79,7 +79,7 @@ public class MapMover implements
   }
 
   @Override
-  public boolean onStretch(float ratio) {
+  public boolean onStretch(double ratio) {
     controllerGroup.zoomBy(1.0f / ratio);
     return true;
   }

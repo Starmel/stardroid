@@ -95,7 +95,7 @@ public static Date calculateGregorianDate(double jd) {
    * Calculate local mean sidereal time in degrees. Note that longitude is
    * negative for western longitude values.
    */
-  public static float meanSiderealTime(Date date, float longitude) {
+  public static double meanSiderealTime(Date date, double longitude) {
     // First, calculate number of Julian days since J2000.0.
     double jd = calculateJulianDay(date);
     double delta = jd - 2451545.0f;
@@ -104,7 +104,7 @@ public static Date calculateGregorianDate(double jd) {
     double gst = 280.461f + 360.98564737f * delta;
     double lst = normalizeAngle(gst + longitude);
 
-    return (float) lst;
+    return lst;
   }
 
   /**

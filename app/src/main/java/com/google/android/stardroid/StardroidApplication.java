@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -40,7 +41,6 @@ import com.google.android.stardroid.layers.SkyGradientLayer;
 import com.google.android.stardroid.util.Analytics;
 import com.google.android.stardroid.util.Analytics.Slice;
 import com.google.android.stardroid.util.MiscUtil;
-import com.google.android.stardroid.util.OsVersions;
 import com.google.android.stardroid.util.PreferenceChangeAnalyticsTracker;
 
 import java.util.Calendar;
@@ -99,7 +99,7 @@ public class StardroidApplication extends Application {
   private void setUpAnalytics(String versionName, SharedPreferences preferences) {
     Analytics analytics = Analytics.getInstance(this);
     analytics.setProductVersion(versionName);
-    analytics.setCustomVar(Slice.ANDROID_OS, Integer.toString(OsVersions.version()));
+    analytics.setCustomVar(Slice.ANDROID_OS, Integer.toString(Build.VERSION.SDK_INT));
     analytics.setCustomVar(Slice.SKYMAP_VERSION, versionName);
     analytics.setCustomVar(Slice.DEVICE_NAME, android.os.Build.MODEL);
     analytics.setEnabled(preferences.getBoolean(Analytics.PREF_KEY, true));

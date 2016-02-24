@@ -14,9 +14,7 @@
 
 package com.google.android.stardroid.units;
 
-import android.util.FloatMath;
-
-import com.google.android.stardroid.util.Geometry;
+import com.google.android.stardroid.util.MathUtil;
 
 /**
  * This class corresponds to an object's location in Euclidean space
@@ -27,7 +25,7 @@ import com.google.android.stardroid.util.Geometry;
  */
 public class GeocentricCoordinates extends Vector3 {
 
-  public GeocentricCoordinates(float x, float y, float z) {
+  public GeocentricCoordinates(double x, double y, double z) {
     super(x, y, z);
   }
 
@@ -38,13 +36,13 @@ public class GeocentricCoordinates extends Vector3 {
     updateFromRaDec(raDec.ra, raDec.dec);
   }
 
-  private void updateFromRaDec(float ra, float dec) {
-    float raRadians = ra * Geometry.DEGREES_TO_RADIANS;
-    float decRadians = dec * Geometry.DEGREES_TO_RADIANS;
+  private void updateFromRaDec(double ra, double dec) {
+    double raRadians = ra * MathUtil.DEGREES_TO_RADIANS;
+    double decRadians = dec * MathUtil.DEGREES_TO_RADIANS;
 
-    this.x = FloatMath.cos(raRadians) * FloatMath.cos(decRadians);
-    this.y = FloatMath.sin(raRadians) * FloatMath.cos(decRadians);
-    this.z = FloatMath.sin(decRadians);
+    this.x = Math.cos(raRadians) * Math.cos(decRadians);
+    this.y = Math.sin(raRadians) * Math.cos(decRadians);
+    this.z = Math.sin(decRadians);
   }
 
   /**
@@ -54,8 +52,8 @@ public class GeocentricCoordinates extends Vector3 {
     return getInstance(raDec.ra, raDec.dec);
   }
 
-  public static GeocentricCoordinates getInstance(float ra, float dec) {
-    GeocentricCoordinates coords = new GeocentricCoordinates(0.0f, 0.0f, 0.0f);
+  public static GeocentricCoordinates getInstance(double ra, double dec) {
+    GeocentricCoordinates coords = new GeocentricCoordinates(0.0, 0.0, 0.0);
     coords.updateFromRaDec(ra, dec);
     return coords;
   }
@@ -63,13 +61,13 @@ public class GeocentricCoordinates extends Vector3 {
   /**
    * Convert ra and dec to x,y,z where the point is place on the unit sphere.
    */
-  public static GeocentricCoordinates getInstanceFromFloatArray(float[] xyz) {
+  public static GeocentricCoordinates getInstanceFromFloatArray(double[] xyz) {
     return new GeocentricCoordinates(xyz[0], xyz[1], xyz[2]);
   }
 
   @Override
-  public float[] toFloatArray() {
-    return new float[] {x, y, z};
+  public double[] toDoubleArray() {
+    return new double[] {x, y, z};
   }
 
   /**

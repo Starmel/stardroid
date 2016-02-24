@@ -100,21 +100,21 @@ public class DynamicStarMapActivity extends Activity implements OnSharedPreferen
     @Override
     public void run() {
       Pointing pointing = model.getPointing();
-      float directionX = pointing.getLineOfSightX();
-      float directionY = pointing.getLineOfSightY();
-      float directionZ = pointing.getLineOfSightZ();
+      double directionX = pointing.getLineOfSightX();
+      double directionY = pointing.getLineOfSightY();
+      double directionZ = pointing.getLineOfSightZ();
 
-      float upX = pointing.getPerpendicularX();
-      float upY = pointing.getPerpendicularY();
-      float upZ = pointing.getPerpendicularZ();
+      double upX = pointing.getPerpendicularX();
+      double upY = pointing.getPerpendicularY();
+      double upZ = pointing.getPerpendicularZ();
 
       rendererController.queueSetViewOrientation(directionX, directionY, directionZ, upX, upY, upZ);
 
       Vector3 acceleration = model.getPhoneAcceleration();
-      rendererController.queueTextAngle(MathUtil.atan2(-acceleration.x, -acceleration.y));
+      rendererController.queueTextAngle(Math.atan2(-acceleration.x, -acceleration.y));
       rendererController.queueViewerUpDirection(model.getZenith().copy());
 
-      float fieldOfView = model.getFieldOfView();
+      double fieldOfView = model.getFieldOfView();
       rendererController.queueFieldOfView(fieldOfView);
     }
   }
@@ -127,7 +127,7 @@ public class DynamicStarMapActivity extends Activity implements OnSharedPreferen
   private static final String BUNDLE_Z_TARGET = "bundle_z_target";
   private static final String BUNDLE_SEARCH_MODE = "bundle_search";
   private static final String SOUND_EFFECTS = "sound_effects";
-  private static final float ROTATION_SPEED = 10;
+  private static final double ROTATION_SPEED = 10;
   private static final String TAG = MiscUtil.getTag(DynamicStarMapActivity.class);
   // Preference that keeps track of whether or not the user accepted the ToS for this version
   // of the app.
@@ -547,7 +547,9 @@ public class DynamicStarMapActivity extends Activity implements OnSharedPreferen
   private void initializeModelViewController() {
     Log.i(TAG, "Initializing Model, View and Controller @ " + System.currentTimeMillis());
     setContentView(R.layout.skyrenderer);
-    OsVersions.setSystemStatusBarVisible(findViewById(R.id.main_sky_view_root), false);
+    /*
+    findViewById(R.id.main_sky_view_root).setSystemUiVisibility(1);  // TODO(jontayler): still needed?
+    */
     skyView = (GLSurfaceView) findViewById(R.id.skyrenderer_view);
     // We don't want a depth buffer.
     skyView.setEGLConfigChooser(false);
@@ -648,9 +650,9 @@ public class DynamicStarMapActivity extends Activity implements OnSharedPreferen
     super.onRestoreInstanceState(icicle);
     if (icicle == null) return;
     searchMode = icicle.getBoolean(BUNDLE_SEARCH_MODE);
-    float x = icicle.getFloat(BUNDLE_X_TARGET);
-    float y = icicle.getFloat(BUNDLE_Y_TARGET);
-    float z = icicle.getFloat(BUNDLE_Z_TARGET);
+    double x = icicle.getFloat(BUNDLE_X_TARGET);
+    double y = icicle.getFloat(BUNDLE_Y_TARGET);
+    double z = icicle.getFloat(BUNDLE_Z_TARGET);
     searchTarget = new GeocentricCoordinates(x, y, z);
     searchTargetName = icicle.getString(BUNDLE_TARGET_NAME);
     if (searchMode) {

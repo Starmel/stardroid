@@ -18,8 +18,14 @@ public final class FixedPoint {
     private FixedPoint() {}
     public static final int ONE = 0x00010000;
     
-    /// Converts a float to a 16.16 fixed point number 
+    // Converts a float to a 16.16 fixed point number
     public final static int floatToFixedPoint(float f) {
+        return (int)(65536F*f);
+    }
+
+    // Converts a float to a 16.16 fixed point number
+    // TODO(jontayler): beware...overflow
+    public final static int doubleToFixedPoint(double f) {
         return (int)(65536F*f);
     }
 }

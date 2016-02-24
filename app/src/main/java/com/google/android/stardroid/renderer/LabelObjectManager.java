@@ -60,7 +60,7 @@ public class LabelObjectManager extends RendererObjectManager {
   // These are intermediate variables set in beginDrawing() and used in
   // draw() to make the transformations more efficient
   private Vector3 mLabelOffset = new Vector3(0, 0, 0);
-  private float mDotProductThreshold;
+  private double mDotProductThreshold;
   
   private TextureReference mTexture = null;
   
@@ -78,7 +78,7 @@ public class LabelObjectManager extends RendererObjectManager {
     // A quad with size 1 on each size, so we just need to multiply
     // by the label's width and height to get it to the right size for each
     // label.
-    float[] vertices = { 
+    float[] vertices = {
         -0.5f, -0.5f,   // lower left
         -0.5f,  0.5f,   // upper left
          0.5f, -0.5f,   // lower right
@@ -219,8 +219,8 @@ public class LabelObjectManager extends RendererObjectManager {
 
     RenderStateInterface rs = super.getRenderState();
     
-    float viewWidth = rs.getScreenWidth();
-    float viewHeight = rs.getScreenHeight();
+    double viewWidth = rs.getScreenWidth();
+    double viewHeight = rs.getScreenHeight();
     
     Matrix4x4 rotation = Matrix4x4.createRotation(rs.getUpAngle(), rs.getLookDir());
     mLabelOffset = Matrix4x4.multiplyMV(rotation, rs.getUpDir());
@@ -228,8 +228,8 @@ public class LabelObjectManager extends RendererObjectManager {
     // If a label isn't within the field of view angle from the target vector, it can't
     // be on the screen.  Compute the cosine of this angle so we can quickly identify these.
     // TODO(jpowell): I know I can make this tighter - do so.
-    final float DEGREES_TO_RADIANS = MathUtil.PI / 180.0f;
-    mDotProductThreshold = MathUtil.cos(rs.getRadiusOfView() * DEGREES_TO_RADIANS * 
+    final double DEGREES_TO_RADIANS = Math.PI / 180.0f;
+    mDotProductThreshold = Math.cos(rs.getRadiusOfView() * DEGREES_TO_RADIANS *
         (1 + viewWidth / viewHeight) * 0.5f); 
   }
 
@@ -278,12 +278,12 @@ public class LabelObjectManager extends RendererObjectManager {
       fixedR = FixedPoint.floatToFixedPoint(r / 255.0f);
     }
     
-    public float x;
-    public float y;
-    public float z;
+    public double x;
+    public double y;
+    public double z;
     
     // The distance this should be rendered underneath the specified position, in world coordinates.
-    public float offset;
+    public double offset;
     
     // Fixed point color values
     public int fixedR;
@@ -315,14 +315,14 @@ public class LabelObjectManager extends RendererObjectManager {
     // half a pixel.  Without this, rounding error can cause the bottom and
     // top of a label to be one pixel off, which results in a noticeable
     // distortion in the text.
-    final float MAGIC_OFFSET = 0.25f;
+    final double MAGIC_OFFSET = 0.25f;
     screenPos.x = (int)screenPos.x + MAGIC_OFFSET;
     screenPos.y = (int)screenPos.y + MAGIC_OFFSET;
 
     gl.glPushMatrix();
     
-    gl.glTranslatef(screenPos.x, screenPos.y, 0);
-    gl.glRotatef(MathUtil.RADIANS_TO_DEGREES * getRenderState().getUpAngle(), 0, 0, -1);
+    gl.glTranslatef((float) screenPos.x, (float) screenPos.y, 0);
+    gl.glRotatef((float) (MathUtil.RADIANS_TO_DEGREES * getRenderState().getUpAngle()), 0, 0, -1);
     gl.glScalef(label.getWidthInPixels(), label.getHeightInPixels(), 1);
    
     gl.glVertexPointer(2, GL10.GL_FIXED, 0, mQuadBuffer);

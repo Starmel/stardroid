@@ -14,87 +14,29 @@
 
 package com.google.android.stardroid.util;
 
-import android.util.FloatMath;
-
 /**
- * Methods for doing mathematical operations with floats.
- *
- * @author Brent Bryan
+ * Mathematic utilities.
  */
 public class MathUtil {
   private MathUtil() {}
 
-  public static final float PI = (float) Math.PI;
-  public static final float TWO_PI = 2f * PI;
-  public static final float DEGREES_TO_RADIANS = PI / 180;
-  public static final float RADIANS_TO_DEGREES = 180 / PI;
-
-  public static float abs(float x) {
-    return Math.abs(x);
-  }
-
-  public static float sqrt(float x) {
-    return FloatMath.sqrt(x);
-  }
-
-  public static float floor(float x) {
-    return FloatMath.floor(x);
-  }
-
-  public static float ceil(float x) {
-    return FloatMath.ceil(x);
-  }
-
-  public static float sin(float x) {
-    return FloatMath.sin(x);
-  }
-
-  public static float cos(float x) {
-    return FloatMath.cos(x);
-  }
-
-  public static float tan(float x) {
-    return FloatMath.sin(x) / FloatMath.cos(x);
-  }
-
-  public static float asin(float x) {
-    return (float) Math.asin(x);
-  }
-
-  public static float acos(float x) {
-    return (float) Math.acos(x);
-  }
-
-  public static float atan(float x) {
-    return (float) Math.atan(x);
-  }
-
-  public static float atan2(float y, float x) {
-    return (float) Math.atan2(y, x);
-  }
-
-  public static float log10(float x) {
-    return (float) Math.log10(x);
-  }
+  public static final double TWO_PI = 2f * Math.PI;
+  public static final double DEGREES_TO_RADIANS = Math.PI / 180;
+  public static final double RADIANS_TO_DEGREES = 180 / Math.PI;
 
   /**
    * Returns x if x <= y, or x-y if not. While this utility performs a role similar to a modulo
    * operation, it assumes x >=0 and that x < 2y.
    */
-  public static float quickModulo(float x, float y) {
+  private static float quickModulo(float x, float y) {
     if (x > y) return x - y;
     return x;
   }
 
   /**
-   * Returns a random number between 0 and f.
+   * Returns the 'floored' mod assuming n>0.
    */
-  public static float random(float f) {
-    return ((float) Math.random()) * f;
+  public static double flooredMod(double a, double n){
+    return a<0 ? (a%n + n)%n : a%n;
   }
-
-  public static float pow(float x, float exponent) {
-    return (float) Math.pow(x, exponent);
-  }
-
 }

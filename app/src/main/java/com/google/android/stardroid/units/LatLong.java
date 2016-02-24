@@ -22,10 +22,10 @@ import com.google.android.stardroid.util.MathUtil;
  * 
  */
 public class LatLong {
-  private float latitude;
-  private float longitude;
+  private double latitude;
+  private double longitude;
 
-  public LatLong(float latitude, float longitude) {
+  public LatLong(double latitude, double longitude) {
     this.latitude = latitude;
     this.longitude = longitude;
     // Silently enforce reasonable limits
@@ -35,16 +35,7 @@ public class LatLong {
     if (this.latitude < -90f) {
       this.latitude = -90f;
     }
-    this.longitude = flooredMod(this.longitude + 180f, 360f) - 180f;
-  }
-
-  /**
-   * This constructor automatically downcasts the latitude and longitude to
-   * floats, so that the previous constructor can be used. It is added as a
-   * convenience method, since many of the GPS methods return doubles.
-   */
-  public LatLong(double latitude, double longitude) {
-    this((float)latitude, (float) longitude);
+    this.longitude = MathUtil.flooredMod(this.longitude + 180, 360) - 180;
   }
 
   /**
@@ -52,28 +43,22 @@ public class LatLong {
    * @param other
    * @return degrees
    */
-  public float distanceFrom(LatLong other) {
+  public double distanceFrom(LatLong other) {
     // Some misuse of the astronomy math classes
     GeocentricCoordinates otherPnt = GeocentricCoordinates.getInstance(other.getLongitude(),
             other.getLatitude());
     GeocentricCoordinates thisPnt = GeocentricCoordinates.getInstance(this.getLongitude(),
             this.getLatitude());
-    float cosTheta = Geometry.cosineSimilarity(thisPnt, otherPnt);
-    return MathUtil.acos(cosTheta) * 180f / MathUtil.PI;
+    double cosTheta = Geometry.cosineSimilarity(thisPnt, otherPnt);
+    return Math.acos(cosTheta) * MathUtil.RADIANS_TO_DEGREES;
   }
 
-  public float getLatitude() {
+  public double getLatitude() {
     return latitude;
   }
 
-  public float getLongitude() {
+  public double getLongitude() {
     return longitude;
   }
 
-  /**
-   * Returns the 'floored' mod assuming n>0.
-   */
-  private static float flooredMod(float a, float n){
-    return a<0 ? (a%n + n)%n : a%n;
-  }
 }

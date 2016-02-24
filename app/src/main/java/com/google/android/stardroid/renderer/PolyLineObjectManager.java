@@ -24,7 +24,6 @@ import com.google.android.stardroid.renderer.util.VertexBuffer;
 import com.google.android.stardroid.source.LineSource;
 import com.google.android.stardroid.units.GeocentricCoordinates;
 import com.google.android.stardroid.units.Vector3;
-import com.google.android.stardroid.util.MathUtil;
 import com.google.android.stardroid.util.VectorUtil;
 
 import java.util.EnumSet;
@@ -70,8 +69,8 @@ public class PolyLineObjectManager extends RendererObjectManager {
     ib.reset(numIndices);
     
     // See comment in PointObjectManager for justification of this calculation.
-    float fovyInRadians = 60 * MathUtil.PI / 180.0f; 
-    float sizeFactor = MathUtil.tan(fovyInRadians * 0.5f) / 480;
+    double fovyInRadians = 60 * Math.PI / 180.0f; 
+    double sizeFactor = Math.tan(fovyInRadians * 0.5f) / 480;
     
     boolean opaque = true;
     

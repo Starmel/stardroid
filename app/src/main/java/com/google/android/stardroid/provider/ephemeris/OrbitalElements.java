@@ -40,16 +40,16 @@ import com.google.android.stardroid.util.MiscUtil;
 public class OrbitalElements {
   private static String TAG = MiscUtil.getTag(OrbitalElements.class);
   // calculation error
-  private final static float EPSILON = 1.0e-6f;
+  private final static double EPSILON = 1.0e-6;
 
-  public final float distance;       // Mean distance (AU)
-  public final float eccentricity;   // Eccentricity of orbit
-  public final float inclination;    // Inclination of orbit (AngleUtils.RADIANS)
-  public final float ascendingNode;  // Longitude of ascending node (AngleUtils.RADIANS)
-  public final float perihelion;     // Longitude of perihelion (AngleUtils.RADIANS)
-  public final float meanLongitude;  // Mean longitude (AngleUtils.RADIANS)
+  public final double distance;       // Mean distance (AU)
+  public final double eccentricity;   // Eccentricity of orbit
+  public final double inclination;    // Inclination of orbit (AngleUtils.RADIANS)
+  public final double ascendingNode;  // Longitude of ascending node (AngleUtils.RADIANS)
+  public final double perihelion;     // Longitude of perihelion (AngleUtils.RADIANS)
+  public final double meanLongitude;  // Mean longitude (AngleUtils.RADIANS)
 
-  public OrbitalElements(float d, float e, float i, float a, float p, float l) {
+  public OrbitalElements(double d, double e, double i, double a, double p, double l) {
     this.distance = d;
     this.eccentricity = e;
     this.inclination = i;
@@ -58,7 +58,7 @@ public class OrbitalElements {
     this.meanLongitude = l;
   }
 
-  public float getAnomaly() {
+  public double getAnomaly() {
     return calculateTrueAnomaly(meanLongitude - perihelion, eccentricity);
   }
   
@@ -66,28 +66,28 @@ public class OrbitalElements {
   // m - mean anomaly in radians
   // e - orbit eccentricity
   // Return value is in radians.
-  private static float calculateTrueAnomaly(float m, float e) {
+  private static double calculateTrueAnomaly(double m, double e) {
     // initial approximation of eccentric anomaly
-    float e0 = m + e * MathUtil.sin(m) * (1.0f + e * MathUtil.cos(m));
-    float e1;
+    double e0 = m + e * Math.sin(m) * (1.0f + e * Math.cos(m));
+    double e1;
 
     // iterate to improve accuracy
     int counter = 0;
     do {
       e1 = e0;
-      e0 = e1 - (e1 - e * MathUtil.sin(e1) - m) / (1.0f - e * MathUtil.cos(e1));
+      e0 = e1 - (e1 - e * Math.sin(e1) - m) / (1.0f - e * Math.cos(e1));
       if (counter++ > 100) {
         Log.d(TAG, "Failed to converge! Exiting.");
         Log.d(TAG, "e1 = " + e1 + ", e0 = " + e0);
-        Log.d(TAG, "diff = " + MathUtil.abs(e0 - e1));
+        Log.d(TAG, "diff = " + Math.abs(e0 - e1));
         break;
       }
-    } while (MathUtil.abs(e0 - e1) > EPSILON);
+    } while (Math.abs(e0 - e1) > EPSILON);
 
     // convert eccentric anomaly to true anomaly
-    float v =
-        2f * MathUtil.atan(MathUtil.sqrt((1 + e) / (1 - e))
-            * MathUtil.tan(0.5f * e0));
+    double v =
+        2f * Math.atan(Math.sqrt((1 + e) / (1 - e))
+            * Math.tan(0.5f * e0));
     return Geometry.mod2pi(v);
   }
 

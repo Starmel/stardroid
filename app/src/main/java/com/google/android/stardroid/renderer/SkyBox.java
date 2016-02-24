@@ -38,22 +38,22 @@ public class SkyBox extends RendererObjectManager {
     mColorBuffer.reset(numVertices);
     mIndexBuffer.reset(numIndices);
     
-    float[] sinAngles = new float[NUM_STEPS_IN_BAND];
-    float[] cosAngles = new float[NUM_STEPS_IN_BAND];
+    double[] sinAngles = new double[NUM_STEPS_IN_BAND];
+    double[] cosAngles = new double[NUM_STEPS_IN_BAND];
     
-    float angleInBand = 0;
-    float dAngle = MathUtil.TWO_PI / (NUM_STEPS_IN_BAND - 1);
+    double angleInBand = 0;
+    double dAngle = MathUtil.TWO_PI / (NUM_STEPS_IN_BAND - 1);
     for (int i = 0; i < NUM_STEPS_IN_BAND; i++) {
-      sinAngles[i] = MathUtil.sin(angleInBand);
-      cosAngles[i] = MathUtil.cos(angleInBand);
+      sinAngles[i] = Math.sin(angleInBand);
+      cosAngles[i] = Math.cos(angleInBand);
       angleInBand += dAngle;
     }
     
-    float bandStep = 2.0f / (NUM_VERTEX_BANDS-1) + EPSILON;
+    double bandStep = 2.0f / (NUM_VERTEX_BANDS-1) + EPSILON;
     
     VertexBuffer vb = mVertexBuffer;
     ColorBuffer cb = mColorBuffer;
-    float bandPos = 1;
+    double bandPos = 1;
     for (int band = 0; band < NUM_VERTEX_BANDS; band++, bandPos -= bandStep) {
       int color;
       if (bandPos > 0) {
@@ -67,9 +67,10 @@ public class SkyBox extends RendererObjectManager {
         color = (intensity << 16) | (intensity << 8) | intensity | 0xff000000;
       }
       
-      float sinPhi = bandPos > -1 ? MathUtil.sqrt(1 - bandPos*bandPos) : 0; 
+      double sinPhi = bandPos > -1 ? Math.sqrt(1 - bandPos*bandPos) : 0;
       for (int i = 0; i < NUM_STEPS_IN_BAND; i++) {
-        vb.addPoint(cosAngles[i] * sinPhi, bandPos, sinAngles[i] * sinPhi);
+        vb.addPoint(
+            (float) (cosAngles[i] * sinPhi), (float) bandPos, (float) (sinAngles[i] * sinPhi));
         cb.addColor(color);
       }
     }
@@ -152,8 +153,8 @@ public class SkyBox extends RendererObjectManager {
     // Rotate the sky box to the position of the sun.
     Vector3 cp = VectorUtil.crossProduct(new Vector3(0, 1, 0), mSunPos);
     cp = VectorUtil.normalized(cp);
-    float angle = 180.0f / MathUtil.PI * MathUtil.acos(mSunPos.y);
-    gl.glRotatef(angle, cp.x, cp.y, cp.z);
+    double angle = MathUtil.RADIANS_TO_DEGREES * Math.acos(mSunPos.y);
+    gl.glRotatef((float) angle, (float) cp.x, (float) cp.y, (float) cp.z);
     
     mVertexBuffer.set(gl);
     mColorBuffer.set(gl);
@@ -168,7 +169,7 @@ public class SkyBox extends RendererObjectManager {
   private static final short NUM_STEPS_IN_BAND = 10;
   
   // Used to make sure rounding error doesn't make us have off-by-one errors in our iterations.
-  private static final float EPSILON = 1e-3f;
+  private static final double EPSILON = 1e-3f;
   
   
   VertexBuffer mVertexBuffer = new VertexBuffer(true);

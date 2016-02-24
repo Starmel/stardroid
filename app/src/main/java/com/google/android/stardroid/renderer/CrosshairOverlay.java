@@ -54,7 +54,7 @@ public class CrosshairOverlay {
     
     int period = 1000;
     long time = System.currentTimeMillis();
-    float intensity = 0.7f + 0.3f * MathUtil.sin((time % period) * MathUtil.TWO_PI / period);
+    float intensity = (float) (0.7f + 0.3f * Math.sin((time % period) * MathUtil.TWO_PI / period));
     if (nightVisionMode) {
       gl.glColor4f(intensity, 0, 0, 0.7f);
     } else {

@@ -14,20 +14,19 @@
 
 package com.google.android.stardroid.units;
 
-import java.util.Date;
-
 import com.google.android.stardroid.provider.ephemeris.OrbitalElements;
 import com.google.android.stardroid.provider.ephemeris.Planet;
-import com.google.android.stardroid.util.Geometry;
 import com.google.android.stardroid.util.MathUtil;
 
+import java.util.Date;
+
 public class HeliocentricCoordinates extends Vector3 {
-  public float radius;  // Radius. (AU)
+  public double radius;  // Radius. (AU)
 
   // Value of the obliquity of the ecliptic for J2000
-  private static final float OBLIQUITY = 23.439281f * Geometry.DEGREES_TO_RADIANS;
+  private static final double OBLIQUITY = 23.439281 * MathUtil.DEGREES_TO_RADIANS;
 
-  public HeliocentricCoordinates(float radius, float xh, float yh, float zh) {
+  public HeliocentricCoordinates(double radius, double xh, double yh, double zh) {
     super(xh, yh, zh);
     this.radius = radius;
   }
@@ -45,15 +44,15 @@ public class HeliocentricCoordinates extends Vector3 {
   public HeliocentricCoordinates CalculateEquatorialCoordinates() {
     return new HeliocentricCoordinates(this.radius,
         this.x,
-        this.y * MathUtil.cos(OBLIQUITY) - this.z * MathUtil.sin(OBLIQUITY),
-        this.y * MathUtil.sin(OBLIQUITY) + this.z * MathUtil.cos(OBLIQUITY));
+        this.y * Math.cos(OBLIQUITY) - this.z * Math.sin(OBLIQUITY),
+        this.y * Math.sin(OBLIQUITY) + this.z * Math.cos(OBLIQUITY));
   }
 
-  public float DistanceFrom(HeliocentricCoordinates other) {
-    float dx = this.x - other.x;
-    float dy = this.y - other.y;
-    float dz = this.z - other.z;
-    return MathUtil.sqrt(dx * dx + dy * dy + dz * dz);
+  public double DistanceFrom(HeliocentricCoordinates other) {
+    double dx = this.x - other.x;
+    double dy = this.y - other.y;
+    double dz = this.z - other.z;
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
   }
 
   public static HeliocentricCoordinates getInstance(Planet planet, Date date) {
@@ -61,28 +60,28 @@ public class HeliocentricCoordinates extends Vector3 {
   }
 
   public static HeliocentricCoordinates getInstance(OrbitalElements elem) {
-    float anomaly = elem.getAnomaly();
-    float ecc = elem.eccentricity;
-    float radius = elem.distance * (1 - ecc * ecc) / (1 + ecc * MathUtil.cos(anomaly));
+    double anomaly = elem.getAnomaly();
+    double ecc = elem.eccentricity;
+    double radius = elem.distance * (1 - ecc * ecc) / (1 + ecc * Math.cos(anomaly));
 
     // heliocentric rectangular coordinates of planet
-    float per = elem.perihelion;
-    float asc = elem.ascendingNode;
-    float inc = elem.inclination;
-    float xh = radius *
-        (MathUtil.cos(asc) * MathUtil.cos(anomaly + per - asc) -
-         MathUtil.sin(asc) * MathUtil.sin(anomaly + per - asc) *
-         MathUtil.cos(inc));
-    float yh = radius *
-        (MathUtil.sin(asc) * MathUtil.cos(anomaly + per - asc) +
-        MathUtil.cos(asc) * MathUtil.sin(anomaly + per - asc) *
-        MathUtil.cos(inc));
-    float zh = radius * (MathUtil.sin(anomaly + per - asc) * MathUtil.sin(inc));
+    double per = elem.perihelion;
+    double asc = elem.ascendingNode;
+    double inc = elem.inclination;
+    double xh = radius *
+        (Math.cos(asc) * Math.cos(anomaly + per - asc) -
+         Math.sin(asc) * Math.sin(anomaly + per - asc) *
+         Math.cos(inc));
+    double yh = radius *
+        (Math.sin(asc) * Math.cos(anomaly + per - asc) +
+        Math.cos(asc) * Math.sin(anomaly + per - asc) *
+        Math.cos(inc));
+    double zh = radius * (Math.sin(anomaly + per - asc) * Math.sin(inc));
 
     return new HeliocentricCoordinates(radius, xh, yh, zh);
   }
 
   @Override public String toString() {
-    return String.format("(%f, %f, %f, %f)", x, y, z, radius);
+    return String.format("(%d, %d, %d, %d)", x, y, z, radius);
   }
 }

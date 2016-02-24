@@ -26,7 +26,6 @@ import com.google.android.stardroid.renderer.util.TextureReference;
 import com.google.android.stardroid.renderer.util.VertexBuffer;
 import com.google.android.stardroid.source.PointSource;
 import com.google.android.stardroid.units.Vector3;
-import com.google.android.stardroid.util.MathUtil;
 import com.google.android.stardroid.util.VectorUtil;
 
 import java.util.ArrayList;
@@ -125,8 +124,8 @@ public class PointObjectManager extends RendererObjectManager {
       // pixels high, a size of 1 means "1 pixel," so calculate sizeFactor
       // based on this.  These numbers mostly come from the fact that that's
       // what I think looks reasonable.
-      float fovyInRadians = 60 * MathUtil.PI / 180.0f;
-      float sizeFactor = MathUtil.tan(fovyInRadians * 0.5f) / 480;
+      double fovyInRadians = 60 * Math.PI / 180.0f;
+      double sizeFactor = Math.tan(fovyInRadians * 0.5f) / 480;
 
       Vector3 bottomLeftPos = new Vector3(0, 0, 0);
       Vector3 topLeftPos = new Vector3(0, 0, 0);
@@ -138,7 +137,7 @@ public class PointObjectManager extends RendererObjectManager {
 
       short index = 0;
 
-      float starWidthInTexels = 1.0f / NUM_STARS_IN_TEXTURE;
+      double starWidthInTexels = 1.0f / NUM_STARS_IN_TEXTURE;
 
       for (PointSource p : data.sources) {
         int color = 0xff000000 | p.getColor();  // Force alpha to 0xff
@@ -159,18 +158,18 @@ public class PointObjectManager extends RendererObjectManager {
 
         int starIndex = p.getPointShape().getImageIndex();
 
-        float texOffsetU = starWidthInTexels * starIndex;
+        double texOffsetU = starWidthInTexels * starIndex;
 
-        data.mTexCoordBuffer.addTexCoords(texOffsetU, 1);
-        data.mTexCoordBuffer.addTexCoords(texOffsetU, 0);
-        data.mTexCoordBuffer.addTexCoords(texOffsetU + starWidthInTexels, 1);
-        data.mTexCoordBuffer.addTexCoords(texOffsetU + starWidthInTexels, 0);
+        data.mTexCoordBuffer.addTexCoords((float) texOffsetU, 1);
+        data.mTexCoordBuffer.addTexCoords(float) texOffsetU, 0);
+        data.mTexCoordBuffer.addTexCoords(float) texOffsetU + starWidthInTexels, 1);
+        data.mTexCoordBuffer.addTexCoords(float) texOffsetU + starWidthInTexels, 0);
 
         Vector3 pos = p.getLocation();
         Vector3 u = VectorUtil.normalized(VectorUtil.crossProduct(pos, up));
         Vector3 v = VectorUtil.crossProduct(u, pos);
 
-        float s = p.getSize() * sizeFactor;
+        double s = p.getSize() * sizeFactor;
 
         su.assign(s*u.x, s*u.y, s*u.z);
         sv.assign(s*v.x, s*v.y, s*v.z);

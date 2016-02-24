@@ -14,6 +14,11 @@
 
 package com.google.android.stardroid.renderer;
 
+import android.content.res.Resources;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLU;
+import android.util.Log;
+
 import com.google.android.stardroid.renderer.util.GLBuffer;
 import com.google.android.stardroid.renderer.util.SkyRegionMap;
 import com.google.android.stardroid.renderer.util.TextureManager;
@@ -22,12 +27,6 @@ import com.google.android.stardroid.units.GeocentricCoordinates;
 import com.google.android.stardroid.units.Vector3;
 import com.google.android.stardroid.util.Matrix4x4;
 import com.google.android.stardroid.util.VectorUtil;
-
-import android.content.res.Resources;
-import android.opengl.GLSurfaceView;
-import android.opengl.GLU;
-import android.util.FloatMath;
-import android.util.Log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -118,7 +117,7 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
         SkyRegionMap.getActiveRegions(
             mRenderState.getLookDir(),
             mRenderState.getRadiusOfView(),
-            (float) mRenderState.getScreenWidth() / mRenderState.getScreenHeight()));
+            (double) mRenderState.getScreenWidth() / mRenderState.getScreenHeight()));
 
     gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -211,7 +210,7 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
     Log.d("SkyRenderer", "Done with sizeChanged");
   }
 
-  public void setRadiusOfView(float degrees) {
+  public void setRadiusOfView(double degrees) {
     // Log.d("SkyRenderer", "setRadiusOfView(" + degrees + ")");
     mRenderState.setRadiusOfView(degrees);
     mMustUpdateProjection = true;
@@ -281,34 +280,34 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
   // Used to set the orientation of the text.  The angle parameter is the roll
   // of the phone.  This angle is rounded to the nearest multiple of 90 degrees
   // to keep the text readable.
-  public void setTextAngle(float angleInRadians) {
-    final float TWO_OVER_PI = 2.0f / (float)Math.PI;
-    final float PI_OVER_TWO = (float)Math.PI / 2.0f;
+  public void setTextAngle(double angleInRadians) {
+    final double TWO_OVER_PI = 2.0f / (double)Math.PI;
+    final double PI_OVER_TWO = (double)Math.PI / 2.0f;
 
-    float newAngle = Math.round(angleInRadians * TWO_OVER_PI) * PI_OVER_TWO;
+    double newAngle = Math.round(angleInRadians * TWO_OVER_PI) * PI_OVER_TWO;
 
     mRenderState.setUpAngle(newAngle);
   }
 
-  public void setViewOrientation(float dirX, float dirY, float dirZ,
-                                 float upX, float upY, float upZ) {
+  public void setViewOrientation(double dirX, double dirY, double dirZ,
+                                 double upX, double upY, double upZ) {
     // Normalize the look direction
-    float dirLen = FloatMath.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
-    float oneOverDirLen = 1.0f / dirLen;
+    double dirLen = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
+    double oneOverDirLen = 1.0f / dirLen;
     dirX *= oneOverDirLen;
     dirY *= oneOverDirLen;
     dirZ *= oneOverDirLen;
 
     // We need up to be perpendicular to the look direction, so we subtract
     // off the projection of the look direction onto the up vector
-    float lookDotUp = dirX * upX + dirY * upY + dirZ * upZ;
+    double lookDotUp = dirX * upX + dirY * upY + dirZ * upZ;
     upX -= lookDotUp * dirX;
     upY -= lookDotUp * dirY;
     upZ -= lookDotUp * dirZ;
 
     // Normalize the up vector
-    float upLen = FloatMath.sqrt(upX*upX + upY*upY + upZ*upZ);
-    float oneOverUpLen = 1.0f / upLen;
+    double upLen = Math.sqrt(upX*upX + upY*upY + upZ*upZ);
+    double oneOverUpLen = 1.0f / upLen;
     upX *= oneOverUpLen;
     upY *= oneOverUpLen;
     upZ *= oneOverUpLen;
@@ -360,7 +359,7 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
     mProjectionMatrix = Matrix4x4.createPerspectiveProjection(
         mRenderState.getScreenWidth(),
         mRenderState.getScreenHeight(),
-        mRenderState.getRadiusOfView() * 3.141593f / 360.0f);
+        mRenderState.getRadiusOfView() * Math.PI / 360.0);
 
     gl.glMatrixMode(GL10.GL_PROJECTION);
     gl.glLoadMatrixf(mProjectionMatrix.getFloatArray(), 0);
@@ -426,10 +425,10 @@ interface RenderStateInterface {
   public GeocentricCoordinates getCameraPos();
   public GeocentricCoordinates getLookDir();
   public GeocentricCoordinates getUpDir();
-  public float getRadiusOfView();
-  public float getUpAngle();
-  public float getCosUpAngle();
-  public float getSinUpAngle();
+  public double getRadiusOfView();
+  public double getUpAngle();
+  public double getCosUpAngle();
+  public double getSinUpAngle();
   public int getScreenWidth();
   public int getScreenHeight();
   public Matrix4x4 getTransformToDeviceMatrix();
@@ -446,10 +445,10 @@ class RenderState implements RenderStateInterface {
   public GeocentricCoordinates getCameraPos() { return mCameraPos; }
   public GeocentricCoordinates getLookDir() { return mLookDir; }
   public GeocentricCoordinates getUpDir() { return mUpDir; }
-  public float getRadiusOfView() { return mRadiusOfView; }
-  public float getUpAngle() { return mUpAngle; }
-  public float getCosUpAngle() { return mCosUpAngle; }
-  public float getSinUpAngle() { return mSinUpAngle; }
+  public double getRadiusOfView() { return mRadiusOfView; }
+  public double getUpAngle() { return mUpAngle; }
+  public double getCosUpAngle() { return mCosUpAngle; }
+  public double getSinUpAngle() { return mSinUpAngle; }
   public int getScreenWidth() { return mScreenWidth; }
   public int getScreenHeight() { return mScreenHeight; }
   public Matrix4x4 getTransformToDeviceMatrix() { return mTransformToDevice; }
@@ -461,11 +460,11 @@ class RenderState implements RenderStateInterface {
   public void setCameraPos(GeocentricCoordinates pos) { mCameraPos = pos.copy(); }
   public void setLookDir(GeocentricCoordinates dir) { mLookDir = dir.copy(); }
   public void setUpDir(GeocentricCoordinates dir) { mUpDir = dir.copy(); }
-  public void setRadiusOfView(float radius) { mRadiusOfView = radius; }
-  public void setUpAngle(float angle) {
+  public void setRadiusOfView(double radius) { mRadiusOfView = radius; }
+  public void setUpAngle(double angle) {
     mUpAngle = angle;
-    mCosUpAngle = FloatMath.cos(angle);
-    mSinUpAngle = FloatMath.sin(angle);
+    mCosUpAngle = Math.cos(angle);
+    mSinUpAngle = Math.sin(angle);
   }
   public void setScreenSize(int width, int height) {
     mScreenWidth = width;
@@ -485,10 +484,10 @@ class RenderState implements RenderStateInterface {
   private GeocentricCoordinates mCameraPos = new GeocentricCoordinates(0, 0, 0);
   private GeocentricCoordinates mLookDir = new GeocentricCoordinates(1, 0, 0);
   private GeocentricCoordinates mUpDir = new GeocentricCoordinates(0, 1, 0);
-  private float mRadiusOfView = 45;  // in degrees
-  private float mUpAngle = 0;
-  private float mCosUpAngle = 1;
-  private float mSinUpAngle = 0;
+  private double mRadiusOfView = 45;  // in degrees
+  private double mUpAngle = 0;
+  private double mCosUpAngle = 1;
+  private double mSinUpAngle = 0;
   private int mScreenWidth = 100;
   private int mScreenHeight = 100;
   private Matrix4x4 mTransformToDevice = Matrix4x4.createIdentity();
