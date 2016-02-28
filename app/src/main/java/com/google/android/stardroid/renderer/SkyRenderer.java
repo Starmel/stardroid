@@ -294,6 +294,7 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
     // Normalize the look direction
     double dirLen = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
     double oneOverDirLen = 1.0f / dirLen;
+
     dirX *= oneOverDirLen;
     dirY *= oneOverDirLen;
     dirZ *= oneOverDirLen;
@@ -308,6 +309,7 @@ public class SkyRenderer implements GLSurfaceView.Renderer {
     // Normalize the up vector
     double upLen = Math.sqrt(upX*upX + upY*upY + upZ*upZ);
     double oneOverUpLen = 1.0f / upLen;
+
     upX *= oneOverUpLen;
     upY *= oneOverUpLen;
     upZ *= oneOverUpLen;

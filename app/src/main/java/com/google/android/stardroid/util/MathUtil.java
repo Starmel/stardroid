@@ -17,12 +17,14 @@ package com.google.android.stardroid.util;
 /**
  * Mathematic utilities.
  */
+// TODO(jontayler): eliminate this class if we can eliminate floats.
 public class MathUtil {
   private MathUtil() {}
 
   public static final double TWO_PI = 2f * Math.PI;
   public static final double DEGREES_TO_RADIANS = Math.PI / 180;
   public static final double RADIANS_TO_DEGREES = 180 / Math.PI;
+
 
   /**
    * Returns x if x <= y, or x-y if not. While this utility performs a role similar to a modulo

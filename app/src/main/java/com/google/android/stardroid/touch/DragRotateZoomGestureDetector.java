@@ -121,7 +121,7 @@ public class DragRotateZoomGestureDetector {
 
       // Dragging map by the mean of the points
       listener.onDrag((distanceMovedX1 + distanceMovedX2) / 2,
-                      (distanceMovedY1 + distanceMovedY2) / 2);
+          (distanceMovedY1 + distanceMovedY2) / 2);
 
       // These are the vectors between the two points.
       float vectorLastX = last1X - last2X;
@@ -136,8 +136,8 @@ public class DragRotateZoomGestureDetector {
           / normSquared(vectorLastX, vectorLastY));
       // Log.d(TAG, "Stretching map by ratio " + ratio);
       listener.onStretch(lengthRatio);
-      double angleLast = Math.atan2(vectorLastX, vectorLastY);
-      double angleCurrent = Math.atan2(vectorCurrentX, vectorCurrentY);
+      float angleLast = MathUtil.atan2(vectorLastX, vectorLastY);
+      float angleCurrent = MathUtil.atan2(vectorCurrentX, vectorCurrentY);
       // Log.d(TAG, "Angle before " + angleBefore);
       // Log.d(TAG, "Angle after " + angleAfter);
       double angleDelta = angleCurrent - angleLast;
