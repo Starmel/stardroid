@@ -87,8 +87,7 @@ public class IssLayer extends AbstractSourceLayer {
   static class OrbitalElementsGrabber implements Runnable {
     private static final long UPDATE_FREQ_MS = TimeConstants.MILLISECONDS_PER_HOUR;
     private static final String TAG = MiscUtil.getTag(OrbitalElementsGrabber.class);
-    private static final String URL_STRING = "http://spaceflight.nasa.gov/realdata/" +
-        "sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html";
+    private static final String URL_STRING = "http://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html";
 
     private final IssSource source;
     private long lastSuccessfulUpdateMs = -1L;
@@ -111,6 +110,7 @@ public class IssLayer extends AbstractSourceLayer {
       float[] params = new float[9];
       int i = 0;
       for (; i < params.length && (s = in.readLine()) != null; i++) {
+        Log.d(getClass().getCanonicalName(), "parseOrbitalElements: s = " + s);
         s = s.substring(46).trim();
         String[] tokens = s.split("\\s+");
         params[i] = Float.parseFloat(tokens[2]);
@@ -143,6 +143,7 @@ public class IssLayer extends AbstractSourceLayer {
       } finally {
         Closeables.closeQuietly(in);
       }
+      Log.d(getClass().getCanonicalName(), "Fetching ISS data error");
       return null;
     }
 
@@ -156,6 +157,7 @@ public class IssLayer extends AbstractSourceLayer {
           Log.d(TAG, "Error downloading ISS orbital data");
         } else {
           lastSuccessfulUpdateMs = currentTimeMs;
+          Log.d(getClass().getCanonicalName(), "run: elements = " + elements);
           source.setOrbitalElements(elements);
         }
       }

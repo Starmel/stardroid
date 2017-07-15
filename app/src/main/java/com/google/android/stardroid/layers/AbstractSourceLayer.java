@@ -14,6 +14,9 @@
 
 package com.google.android.stardroid.layers;
 
+import android.content.res.Resources;
+import android.util.Log;
+
 import com.google.android.stardroid.renderer.RendererObjectManager.UpdateType;
 import com.google.android.stardroid.renderer.util.AbstractUpdateClosure;
 import com.google.android.stardroid.renderer.util.UpdateClosure;
@@ -27,9 +30,6 @@ import com.google.android.stardroid.source.Sources;
 import com.google.android.stardroid.source.TextSource;
 import com.google.android.stardroid.units.GeocentricCoordinates;
 import com.google.android.stardroid.util.MiscUtil;
-
-import android.content.res.Resources;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

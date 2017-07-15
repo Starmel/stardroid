@@ -56,7 +56,9 @@ public abstract class AbstractFileBasedLayer extends AbstractSourceLayer {
     this.assetManager = assetManager;
     this.fileName = fileName;
   }
-
+  
+  
+  
   @Override
   public void initialize() {
     BACKGROUND_EXECUTOR.execute(new Runnable() {

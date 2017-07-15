@@ -229,7 +229,7 @@ public class MeteorShowerLayer extends AbstractSourceLayer {
 
       theImage.setUpVector(UP);
       // TODO(johntaylor): consider varying the sizes by scaling factor as time progresses.
-      if (now.after(shower.start) && now.before(shower.end)) {
+      if (now.after(shower.start) && now.before(shower.end) || true) {
         label.setText(name);
         double percentToPeak;
         if (now.before(shower.peak)) {

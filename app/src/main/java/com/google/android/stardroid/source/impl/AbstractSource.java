@@ -38,8 +38,12 @@ public abstract class AbstractSource implements Colorable, PositionSource {
   }
 
   public UpdateGranularity granularity;
-
-  private final int color;
+  
+  public void setColor(int color) {
+    this.color = color;
+  }
+  
+  private int color;
   private final GeocentricCoordinates xyz;
   private List<String> names;
 

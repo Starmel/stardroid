@@ -44,7 +44,7 @@ public class GeocentricCoordinates extends Vector3 {
   private void updateFromRaDec(float ra, float dec) {
     float raRadians = ra * Geometry.DEGREES_TO_RADIANS;
     float decRadians = dec * Geometry.DEGREES_TO_RADIANS;
-
+    
     this.x = MathUtil.cos(raRadians) * MathUtil.cos(decRadians);
     this.y = MathUtil.sin(raRadians) * MathUtil.cos(decRadians);
     this.z = MathUtil.sin(decRadians);
@@ -86,6 +86,8 @@ public class GeocentricCoordinates extends Vector3 {
   public float[] toFloatArray() {
     return new float[] {x, y, z};
   }
+  
+  
 
   /**
    * Assumes it's an array of length 3.
