@@ -18,10 +18,10 @@ import com.google.android.stardroid.source.impl.ImageSourceImpl;
 import com.google.android.stardroid.source.impl.LineSourceImpl;
 import com.google.android.stardroid.source.impl.TextSourceImpl;
 import com.google.android.stardroid.units.GeocentricCoordinates;
+import com.google.android.stardroid.units.LatLong;
 import com.google.android.stardroid.units.Vector3;
 import com.google.android.stardroid.util.SatCalculator;
 import com.google.common.io.Closeables;
-import com.google.gson.JsonArray;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +38,6 @@ import java.util.concurrent.CountDownLatch;
 public class SatelliteLayer extends AbstractSourceLayer {
   private final AstronomerModel model;
   private List<Satellite> sats = new ArrayList<>();
-  private JsonArray satInfoJson;
   
   public SatelliteLayer(AstronomerModel model, Resources resources) {
     super(resources, true);
@@ -54,13 +53,31 @@ public class SatelliteLayer extends AbstractSourceLayer {
         ArrayList<String> tleList =
             getOrbitalElements("http://www.celestrak.com/NORAD/elements/visual.txt");
 //        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/gps-ops.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/iridium.txt"));
+
 //        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/geo.txt"));
 //        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/ses.txt"));
-//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/intelsat.txt"));
-//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/iridium.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/intelsat
+// .txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/science.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/noaa.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/goes.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/resource
+// .txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/dmc.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/tdrss.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/weather.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/orbcomm.txt"));
+//        tleList.addAll(getOrbitalElements("http://www.celestrak.com/NORAD/elements/iridium-NEXT
+// .txt"));
         
         if (tleList != null && !tleList.isEmpty()) {
           for (String tle : tleList) {
+            SatCalculator.Position position = SatCalculator.INSTANCE
+                .calculatePosition(SatCalculator.INSTANCE.getTLEInformation(tle),
+                    new Date(System.currentTimeMillis()));
+            
+            
             sats.add(new Satellite(tle));
           }
         }
@@ -138,10 +155,11 @@ public class SatelliteLayer extends AbstractSourceLayer {
     private String name;
     private SatCalculator.TLEParams tleParams;
     
-    public Satellite(String tle) {
+    Satellite(String tle) {
       this.name = tle.split("\\n")[0];
       this.tleParams = SatCalculator.INSTANCE.getTLEInformation(tle);
-      this.radiant = SatCalculator.INSTANCE.calculatePosition(tleParams, null);
+      SatCalculator.Position position = SatCalculator.INSTANCE.calculatePosition(tleParams, null);
+      this.radiant = GeocentricCoordinates.getInstance(position.getRa(), position.getDec());
     }
   }
   
@@ -182,9 +200,33 @@ public class SatelliteLayer extends AbstractSourceLayer {
     
     private void updateCoords(Date time) {
       lastUpdateTimeMs = time.getTime();
-      GeocentricCoordinates calculatePosition =
+      SatCalculator.Position position =
           SatCalculator.INSTANCE.calculatePosition(satellite.tleParams, time);
+      
+      GeocentricCoordinates calculatePosition =
+          GeocentricCoordinates.getInstance(position.getRa(), position.getDec());
       coords.assign(calculatePosition.x, calculatePosition.y, calculatePosition.z);
+      
+      LatLong location = model.getLocation();
+      double distance = SatCalculator.INSTANCE
+          .distance(location.getLatitude(), location.getLongitude(), position.getLat(),
+              position.getLng(), position.getAlt());
+      
+      double mag = (Math.round((-1.3 + 5 * Math.log(distance / 1000.0)) * 10.0) / 10.0);
+
+//      if (mag < 3) {
+//        Log.d(getClass().getCanonicalName(),
+//            "updateCoords: mag = " + mag + " name =" + name + " distance = " + distance);
+//      Log.d(getClass().getCanonicalName(), "updateCoords: v: " + position.getVelocity() + " s:"
+// + satellite.name + "@");
+      label.setText("v: " +System.currentTimeMillis());
+
+
+//        theImage.setImageId(R.drawable.star_off);
+//      } else {
+//        label.setText(".");
+//        theImage.setImageId(R.drawable.blank);
+//      }
     }
     
     @Override
@@ -236,9 +278,11 @@ public class SatelliteLayer extends AbstractSourceLayer {
         int count = 24;
         float part = 86400000 / count;
         for (int i = 0; i < count; i++) {
-          GeocentricCoordinates coordinates =
+          SatCalculator.Position position =
               SatCalculator.INSTANCE.calculatePosition(satellite.tleParams,
                   new Date((long) (System.currentTimeMillis() + part * i)));
+          GeocentricCoordinates coordinates =
+              GeocentricCoordinates.getInstance(position.getRa(), position.getDec());
           list.add(coordinates);
         }
         return Collections.singletonList(new LineSourceImpl(Color.RED, list, 1f));

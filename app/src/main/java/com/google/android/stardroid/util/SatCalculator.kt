@@ -1,6 +1,5 @@
 package com.google.android.stardroid.util
 
-import com.google.android.stardroid.units.GeocentricCoordinates
 import java.util.*
 
 object SatCalculator {
@@ -11,7 +10,7 @@ object SatCalculator {
     val Earth_equatorial_radius = 6378.135
 
 
-    fun calculatePosition(tleParams: TLEParams, date: Date? = null): GeocentricCoordinates {
+    fun calculatePosition(tleParams: TLEParams, date: Date? = null): Position {
         val cal = Calendar.getInstance()
         if (date != null) {
             cal.time = date
@@ -51,8 +50,6 @@ object SatCalculator {
         val Py = Math.cos(toRad * arg_per) * Math.sin(RAAN * toRad) + Math.sin(toRad * arg_per) * Math.cos(toRad * RAAN) * Math.cos(toRad * i)
         val Pz = Math.sin(toRad * arg_per) * Math.sin(toRad * i)
 
-        //alert(toDeg*Math.atan2(Py,Math.sqrt(Px*Px+Py*Py)))
-
         val Qx = -Math.sin(toRad * arg_per) * Math.cos(RAAN * toRad) - Math.cos(toRad * arg_per) * Math.sin(toRad * RAAN) * Math.cos(toRad * i)
         val Qy = -Math.sin(toRad * arg_per) * Math.sin(RAAN * toRad) + Math.cos(toRad * arg_per) * Math.cos(toRad * RAAN) * Math.cos(toRad * i)
         val Qz = Math.cos(toRad * arg_per) * Math.sin(toRad * i)
@@ -63,8 +60,36 @@ object SatCalculator {
 
         val Declination = toDeg * Math.atan2(z, Math.sqrt(x * x + y * y))
         val RA = (Rev(toDeg * Math.atan2(y, x)))
-        return GeocentricCoordinates.getInstance(RA.toFloat(), Declination.toFloat())
+
+
+        var longitude = Rev(toDeg * Math.atan2(y, x) - getMST(cal, 0.0))
+        var latitude = toDeg * Math.atan2(z, Math.sqrt(x * x + y * y))
+        if (longitude > 180)
+            longitude = 360 - longitude
+
+        if (latitude < 0)
+            latitude = -latitude
+
+        val alt = Math.sqrt(X0 * X0 + Y0 * Y0) - Earth_equatorial_radius
+
+
+        val velocity = Math.sqrt(398600.5 / Math.sqrt(X0 * X0 + Y0 * Y0))
+
+        return Position(RA.toFloat(), Declination.toFloat(), latitude, longitude, alt, velocity)
     }
+
+    fun distance(userLat: Double, userLon: Double, satLat: Double, satLon: Double, satAlt: Double): Double {
+        val theta = userLon - satLon
+        var dist = Math.sin(deg2rad(userLat)) * Math.sin(deg2rad(satLat)) + Math.cos(deg2rad(userLat)) * Math.cos(deg2rad(satLat)) * Math.cos(deg2rad(theta))
+        dist = Math.acos(dist)
+        dist = rad2deg(dist)
+        dist *= 60.0 * 1.1515 * 1.609344
+        return Math.sqrt(Math.pow(dist, 2.0) + Math.pow(satAlt, 2.0))
+    }
+
+    private inline fun deg2rad(deg: Double) = deg * Math.PI / 180.0
+
+    private inline fun rad2deg(rad: Double) = rad * 180 / Math.PI
 
     fun getTLEInformation(tleString: String): TLEParams? {
         val rows = tleString.split("\n")
@@ -103,6 +128,8 @@ object SatCalculator {
         }
     }
 
+    data class Position(val ra: Float, val dec: Float, val lat: Double, val lng: Double, val alt: Double, val velocity: Double)
+
     fun daynumber_tle(Year: Double, Day: Double): Double {
         return daynumber(1.0, 1.0, Year, 0.0, 0.0, 0.0) + Day - 1
 
@@ -132,5 +159,40 @@ object SatCalculator {
         return x
     }
 
+    fun getMST(now: Calendar, lon: Double): Double {
+        val day = now.get(Calendar.DAY_OF_MONTH).toDouble()
+        var month = now.get(Calendar.MONTH).toDouble() + 1
+        var year = now.get(Calendar.YEAR).toDouble()
+        val hour = now.get(Calendar.HOUR_OF_DAY).toDouble()
+        val minute = now.get(Calendar.MINUTE).toDouble()
+        val second = now.get(Calendar.SECOND).toDouble()
+
+        if (month == 1.0 || month == 2.0) {
+            year -= 1
+            month += 12
+        }
+
+        val a = Math.floor(year / 100);
+        val b = 2 - a + Math.floor(a / 4);
+
+        val c = Math.floor(365.25 * year);
+        val d = Math.floor(30.6001 * (month + 1));
+
+        // days since J2000.0
+        val jd = b + c + d - 730550.5 + day + (hour + minute / 60.0 + second / 3600.0) / 24.0
+
+        val jt = (jd) / 36525.0
+        // julian centuries since J2000.0
+        var GMST = 280.46061837 + 360.98564736629 * jd + 0.000387933 * jt * jt - jt * jt * jt / 38710000 + lon
+        if (GMST > 0.0) {
+            while (GMST > 360.0)
+                GMST -= 360.0
+        } else {
+            while (GMST < 0.0)
+                GMST += 360.0
+        }
+
+        return GMST
+    }
 
 }

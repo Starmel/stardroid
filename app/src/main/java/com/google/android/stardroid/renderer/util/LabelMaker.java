@@ -109,7 +109,7 @@ public class LabelMaker {
       return mCrop;
     }
 
-    private String mText = "";
+    public String mText = "";
     private int mColor = 0xffffffff;
     private int mFontSize = 24;
     private int mWidthInPixels = 0;
@@ -216,6 +216,7 @@ public class LabelMaker {
         // Paint.ascent is negative, so negate it.
         ascent = (int) Math.ceil(-textPaint.ascent());
         descent = (int) Math.ceil(textPaint.descent());
+        
         measuredTextWidth = (int) Math.ceil(textPaint.measureText(label.getText()));
     
         height = ascent + descent;

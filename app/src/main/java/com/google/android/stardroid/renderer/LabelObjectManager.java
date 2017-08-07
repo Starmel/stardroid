@@ -140,6 +140,7 @@ public class LabelObjectManager extends RendererObjectManager {
         mLabels[i].x = pos.x;
         mLabels[i].y = pos.y;
         mLabels[i].z = pos.z;
+        mLabels[i].mText = "123";
       }
     }
     
@@ -324,7 +325,7 @@ public class LabelObjectManager extends RendererObjectManager {
     gl.glTranslatef(screenPos.x, screenPos.y, 0);
     gl.glRotatef(MathUtil.RADIANS_TO_DEGREES * getRenderState().getUpAngle(), 0, 0, -1);
     gl.glScalef(label.getWidthInPixels(), label.getHeightInPixels(), 1);
-   
+    
     gl.glVertexPointer(2, GL10.GL_FIXED, 0, mQuadBuffer);
     gl.glTexCoordPointer(2, GL10.GL_FIXED, 0, label.getTexCoords());
     if (getRenderState().getNightVisionMode()) {
